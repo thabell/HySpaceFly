@@ -7,7 +7,7 @@ from main.models import Achievement, Progress, SaleItem, Background, Character,\
 
 @admin.register(Background)
 class BackgroundAdmin(admin.ModelAdmin):
-    list_display = ('preview', 'image_FHD', 'has_FHD', 'image_HD', 'has_HD', 'image_LQ', 'has_LQ')
+    list_display = ('active', 'preview', 'image_FHD', 'has_FHD', 'image_HD', 'has_HD', 'image_LQ', 'has_LQ')
 
 
 @admin.register(Character)

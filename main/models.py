@@ -30,6 +30,9 @@ class Background(models.Model):  # cosmos
     has_LQ = models.BooleanField(default=False, null=True, blank=True)
     active = models.BooleanField(default=False)
 
+    def __str__(self):
+        return "Фон"
+
     @classmethod
     def create(cls, preview, image_FHD, has_FHD, image_HD, has_HD, image_LQ, has_LQ, active):
         back = cls(preview=preview, image_FHD=image_FHD, has_FHD=has_FHD,
@@ -45,9 +48,6 @@ class Background(models.Model):  # cosmos
                 back_.active = False
         back.active = True
         return back
-
-    def __str__(self):
-        return "Фон №" + str(self.id)
 
 
 class Character(models.Model):  # square, plane, human
