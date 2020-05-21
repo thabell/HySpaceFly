@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}HySpaceFly - Полет в гиперпространстве{% endblock %}
+
+{% block body_block %}
+    <h1>Hyperspace Fly - Полет в гиперпространстве - приветствует тебя, путник!</h1>
+    {{ back.preview.url }}
+    <style>
+        body {
+            background-image: url(../../{{ back.preview.url }});
+            background-color: #c7b39b;
+        }
+    </style>
+{% endblock %}
