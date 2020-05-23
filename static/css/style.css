@@ -1,3 +1,79 @@
-h1 {
+@font-face {
+    font-family: 'SpaceAge';
+    src: url("../fonts/SpaceAge.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+.visually-hidden:not(:focus):not(:active),
+input[type="checkbox"].visually-hidden,
+input[type="file"].visually-hidden,
+input[type="radio"].visually-hidden {
+    position: absolute;
+    clip: rect(0 0 0 0);
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+
+    border: 0;
+    padding: 0;
+
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(100%);
+}
+html {
     color: white;
+    overflow: hidden;
+}
+h1 {
+    font-family: 'SpaceAge', serif;
+    font-size: 4vw;
+    text-align: center;
+}
+h1 .large {
+    font-size: 7vw;
+}
+h1 .small {
+    font-size: 2vw;
+}
+
+.game_h1 {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.game_snag {
+    position: absolute;
+    left: calc(50% - 55px + 32vw);
+    top: calc(30% - 55px + 45vh);
+}
+.game_character {
+    position: absolute;
+    left: calc(50% - 200px);
+    top: calc(70% - 125px);
+}
+/*  # TODO animation_forward_left
+    # TODO animation_forward_right
+    # TODO animation_forward_middle
+    # TODO animation_bang
+*/
+@keyframes animation_forward_left {
+    0% {
+        opacity: 0.5;
+        transform: scale(0.01, 0.01) translate(-32vw, -45vh);
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2, 2) translate(0, 0);
+        opacity: 0;
+    }
+}
+.animation_forward_left {
+    animation-name: animation_forward_left;
+    animation-duration: 4s;
 }

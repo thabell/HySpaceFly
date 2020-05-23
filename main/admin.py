@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main.models import Achievement, Progress, SaleItem, Background, Character,\
+from main.models import Preferences, Achievement, Progress, SaleItem, Background, Character,\
     CharacterMoves, Skills, Snag, SnagMoves, Banner, Speech, EventConnections
 
 # Register your models here.
@@ -7,7 +7,7 @@ from main.models import Achievement, Progress, SaleItem, Background, Character,\
 
 @admin.register(Background)
 class BackgroundAdmin(admin.ModelAdmin):
-    list_display = ('active', 'preview', 'image_FHD', 'has_FHD', 'image_HD', 'has_HD', 'image_LQ', 'has_LQ')
+    list_display = ('id', 'active', 'preview', 'image_FHD', 'image_HD', 'image_LQ')
 
 
 @admin.register(Character)

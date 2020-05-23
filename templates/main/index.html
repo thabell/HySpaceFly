@@ -4,7 +4,9 @@
 {% block title %}HySpaceFly - Полет в гиперпространстве{% endblock %}
 
 {% block body_block %}
-    <h1>Hyperspace Fly - Полет в гиперпространстве - приветствует тебя, путник!</h1>
+    <h1 class="game_h1"><span class="large">Hyperspace Fly</span><br><span class="small">Полет в гиперпространстве</span><br>приветствует тебя, путник!</h1>
+    <div class="game_snag"><img src="{{ snag.preview.url }}" alt="{{ snag }}"></div>
+    <div class="game_character"><img src="{{ character.preview.url }}" alt="{{ character }}"></div>
     <style>
         html {
             width: 100%;
@@ -20,9 +22,17 @@
 {% block scripts %}
 <script>
     {% if back.image_FHD %}
-        document.querySelector('html').style.backgroundImage = "url(../..{{ back.image_FHD.url }})";
+        background_image = document.createElement('img');
+        background_image.src = "../..{{ back.image_FHD.url }}";
+        background_image.onload = function() {
+            document.querySelector('html').style.backgroundImage = "url(../..{{ back.image_FHD.url }})";
+        };
     {% elif back.image_HD %}
-        document.querySelector('html').style.backgroundImage = "url(../..{{ back.image_HD.url }})";
+        background_image = document.createElement('img');
+        background_image.src = "../..{{ back.image_HD.url }}";
+        background_image.onload = function() {
+            document.querySelector('html').style.backgroundImage = "url(../..{{ back.image_HD.url }})";
+        };
     {% elif back.image_LQ %}
         document.querySelector('html').style.backgroundImage = "url(../..{{ back.image_LQ.url }})";
     {% endif %}
