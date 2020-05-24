@@ -115,6 +115,15 @@ class SnagMoves(models.Model):
     pass
 
 
+class Bang(models.Model):  # meteorite star circle another_plane
+    name = models.CharField("Название", max_length=50)
+    preview = models.ImageField("Превью", upload_to="main/bang/preview")
+    # TODO animation_acivate
+
+    def __str__(self):
+        return "Взрыв " + str(self.name)
+
+
 # TODO
 class Banner(models.Model):
     pass

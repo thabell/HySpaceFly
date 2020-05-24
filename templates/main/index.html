@@ -4,8 +4,11 @@
 {% block title %}HySpaceFly - Полет в гиперпространстве{% endblock %}
 
 {% block body_block %}
+<main class="game">
     <h1 class="game_h1"><span class="large">Hyperspace Fly</span><br><span class="small">Полет в гиперпространстве</span><br>приветствует тебя, путник!</h1>
-    <div class="game_snag"><img src="{{ snag.preview.url }}" alt="{{ snag }}"></div>
+    <button class="game_play" type="button"><span class="visually-hidden">Начать игру</span><img src="{% static 'img/game_play.jpg' %}"></button>
+    <div class="game_bang visually-hidden"><img src="{{ bang.preview.url }}" alt="{{ bang }}"></div>
+    <div class="game_snag visually-hidden"><img src="{{ snag.preview.url }}" alt="{{ snag }}"></div>
     <div class="game_character"><img src="{{ character.preview.url }}" alt="{{ character }}"></div>
     <style>
         html {
@@ -14,9 +17,10 @@
             background: url(../..{{ back.preview.url }}) 100% 100% no-repeat;
             background-size: cover;
             // background-position: center;
-            background-color: darkblue;
+            background-color: #120d2d;
         }
     </style>
+</main>
 {% endblock %}
 
 {% block scripts %}
@@ -36,5 +40,6 @@
     {% elif back.image_LQ %}
         document.querySelector('html').style.backgroundImage = "url(../..{{ back.image_LQ.url }})";
     {% endif %}
+    // как препятствия, так и взрывы рандомные сгенерировать здесь
 </script>
 {% endblock %}

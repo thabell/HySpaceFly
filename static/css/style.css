@@ -36,7 +36,16 @@ h1 .large {
 h1 .small {
     font-size: 2vw;
 }
-
+img {
+    max-width: 100%;
+    height: auto;
+}
+.game_play {
+    border: none;
+    border-radius: 2%;
+    width: 5vw;
+    height: 5vw;
+}
 .game_h1 {
     position: absolute;
     z-index: 2;
@@ -44,11 +53,57 @@ h1 .small {
     left: 0;
     right: 0;
 }
-
+.game_h1:hover {
+    opacity: 1 !important;
+}
+.game_h1.game_h1_of {
+    opacity: 0.1;
+    transition-timing-function: ease;
+}
+@keyframes game_h1_off {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.1;
+    }
+}
+.game_h1_off {
+    animation-name: game_h1_off;
+    animation-duration: 2s;
+}
+.game_bang {
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 0;
+}
+@keyframes game_bang_activate {
+    0% {
+        opacity: 0.5;
+        transform: scale(0.01, 0.01);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(4, 4);
+    }
+    80% {
+        opacity: 1;
+        transform: scale(4, 4);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5, 0.5);
+    }
+}
+.game_bang_activate {
+    animation-name: game_bang_activate;
+    animation-duration: 2s;
+}
 .game_snag {
     position: absolute;
-    left: calc(50% - 55px + 32vw);
-    top: calc(30% - 55px + 45vh);
+    top: 0;
+    left: 0;
 }
 .game_character {
     position: absolute;
@@ -60,20 +115,24 @@ h1 .small {
     # TODO animation_forward_middle
     # TODO animation_bang
 */
-@keyframes animation_forward_left {
+:root {
+  --snag-anim-translate-x: 32vw;
+  --snag-anim-translate-y: 45vh;
+}
+@keyframes game_snag_animation {
     0% {
         opacity: 0.5;
-        transform: scale(0.01, 0.01) translate(-32vw, -45vh);
+        transform: scale(0.01, 0.01);
     }
     80% {
         opacity: 1;
     }
     100% {
-        transform: scale(2, 2) translate(0, 0);
+        transform: scale(2, 2) translate(var(--snag-anim-translate-x), var(--snag-anim-translate-y));
         opacity: 0;
     }
 }
-.animation_forward_left {
-    animation-name: animation_forward_left;
+.game_snag_animation {
+    animation-name: game_snag_animation;
     animation-duration: 4s;
 }

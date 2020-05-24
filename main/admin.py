@@ -1,6 +1,6 @@
 from django.contrib import admin
 from main.models import Preferences, Achievement, Progress, SaleItem, Background, Character,\
-    CharacterMoves, Skills, Snag, SnagMoves, Banner, Speech, EventConnections
+    CharacterMoves, Skills, Snag, SnagMoves, Bang, Banner, Speech, EventConnections
 
 # Register your models here.
 
@@ -17,4 +17,9 @@ class CharacterAdmin(admin.ModelAdmin):
 
 @admin.register(Snag)
 class SnagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'preview')
+
+
+@admin.register(Bang)
+class BangAdmin(admin.ModelAdmin):
     list_display = ('name', 'preview')
