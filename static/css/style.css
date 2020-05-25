@@ -26,15 +26,16 @@ html {
     overflow: hidden;
 }
 h1 {
+    word-break: break-all;
     font-family: 'SpaceAge', serif;
-    font-size: 4vw;
+    font-size: 4vh;
     text-align: center;
 }
 h1 .large {
-    font-size: 7vw;
+    font-size: 7vh;
 }
 h1 .small {
-    font-size: 2vw;
+    font-size: 2vh;
 }
 img {
     max-width: 100%;
@@ -42,37 +43,33 @@ img {
 }
 .game_play {
     border: none;
+    background: none;
     border-radius: 2%;
-    width: 5vw;
-    height: 5vw;
+    width: 10vh;
+    /*position: absolute;*/
+    /*z-index: 2;*/
+    /*top: 10vh;*/
+    /*left: 1vw;*/
+    opacity: 0.5;
+}
+.game_play:hover,
+.game_play:focus {
+    opacity: 1;
 }
 .game_h1 {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    right: 0;
+    margin: 0 auto;
+    /*position: absolute;*/
+    /*z-index: 2;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*right: 0;*/
 }
-.game_h1:hover {
-    opacity: 1 !important;
-}
-.game_h1.game_h1_of {
+.game_h1.game_h1_off {
     opacity: 0.1;
-    transition-timing-function: ease;
-}
-@keyframes game_h1_off {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.1;
-    }
-}
-.game_h1_off {
-    animation-name: game_h1_off;
-    animation-duration: 2s;
+    transition: opacity 1s ease-out 0s;
 }
 .game_bang {
+    width: 25vh;
     position: absolute;
     z-index: 999;
     top: 0;
@@ -102,13 +99,17 @@ img {
 }
 .game_snag {
     position: absolute;
+    width: 10vh;
     top: 0;
     left: 0;
 }
 .game_character {
     position: absolute;
-    left: calc(50% - 200px);
-    top: calc(70% - 125px);
+    max-width: 20vw;
+    height: auto;
+}
+.game_character img {
+    max-width: 20vw;
 }
 /*  # TODO animation_forward_left
     # TODO animation_forward_right
@@ -134,5 +135,6 @@ img {
 }
 .game_snag_animation {
     animation-name: game_snag_animation;
-    animation-duration: 4s;
+    animation-duration: 2s;
+    animation-timing-function: linear;
 }

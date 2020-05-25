@@ -2,6 +2,7 @@
 function cycl_with_Timeout(mseconds, max_count, cycled_function, args, check) {
 	var i = 0;
 	function recurs_cycl() {
+		i++;
 		if ((i < max_count) && (bang_check(args, check))) {
 			setTimeout(function () {
 				recurs_cycl();
@@ -15,11 +16,6 @@ function getRandomIntInclusive(min, max) { // fun from https://developer.mozilla
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-// TODO
-function generate_new_bang() {
-	console.log("generating bang...")
 }
 
 function bang_check(args, check) {
@@ -59,59 +55,100 @@ function bang_check(args, check) {
 		game_bang.style.top = a_y1 + "px";
 		game_bang.classList.remove("visually-hidden");
 		game_bang.classList.add("game_bang_activate");
-		setTimeout(function () {
-			game_bang.parentNode.removeChild(game_bang);
-		}, 1980);
-		setTimeout(function () {
-			generate_new_bang();
-		});
 		check = false;
+		setTimeout(function () {
+			try {
+				game_bang.parentNode.removeChild(game_bang);
+			} catch(error) {console.log(error);}
+		}, 1980);
 	}
 	return check;
 }
 
-function prepareGame() {
-	var game_h1 = document.querySelector(".game_h1");
-	game_h1.classList.add("game_h1_off");
-	game_h1.style.opacity = "0.1";
-}
-
+var game_h1 = document.querySelector(".game_h1");
 var game_character = document.querySelector('.game_character');
+game_character.style.left = "calc(50% - " + Math.round(game_character.getBoundingClientRect().width / 2) + "px)";
+game_character.style.top = "calc(70% - " + Math.round(game_character.getBoundingClientRect().height / 2) + "px)";
+var game_play = document.querySelector('.game_play');
+var playing_game = false;
 
-setTimeout(function() {
+// TODO сделать анимацию полета вне игры
+// TODO сделать анимацию пролета через тоннель гиперпространства при начале игры. мб объединить это
+function prepareGame() {
+	// console.log("prepareGame");
+	playing_game = true;
+	game_play.removeEventListener("click", play_event);
+	game_play.addEventListener("click", stopGame);
+	setTimeout(function () { // async
+		game_play.innerHTML = "<span class=\"visually-hidden\">Остановить игру</span><img src=\"../static/img/game_play--playing.png\">";
+	});
+	game_h1.classList.add("game_h1_off");
+}
+function stopGame(event) {
+	// console.log(event.target);
+	playing_game = false;
+	// console.log("playing_game=" + playing_game);
+	game_play.removeEventListener("click", stopGame);
+	game_play.addEventListener("click", play_event);
+	game_h1.classList.remove("game_h1_off");
+	setTimeout(function () { // async
+		game_play.innerHTML = "<span class=\"visually-hidden\">Начать игру</span><img src=\"../static/img/game_play.png\">";
+	});
+}
+function play_event(event) {
+	// console.log(event.target);
 	prepareGame();
-	var game_snag = document.querySelector('.game_snag');
-	var game_bang = document.querySelector('.game_bang');
-	// TODO по-хорошему подгружать snagи и bangи в отдельном потоке, а функции забирали бы крайний элемент из контеунера, в котором подрегениваются они
-	// console.log(game_snag.getBoundingClientRect());
-	game_snag.classList.remove("visually-hidden");
-	game_snag.style.top = "calc(30% - " + (game_snag.getBoundingClientRect().height / 2) + "px)";
-	game_snag.style.left = "calc(50% - " + (game_snag.getBoundingClientRect().width / 2) + "px)";
-	try {
-		var check = true;
-		cycl_with_Timeout(50, 100, bang_check, [game_snag, game_character, game_bang], check);
-	} catch (error) { console.log(error); }
-	// 45 v - рамки экрана. чем больше от 45, тем быстрее скорость предмета. п.с. траетория тоже меняется. ПОЭТОМУ сложность наращивать именно здесь.
-	// возможно, придется подтягивать вероятность попадания по кораблю
-	game_snag.style.setProperty('--snag-anim-translate-x', (getRandomIntInclusive(-45, 45) + "vw"));
-	// game_snag.style.setProperty('--snag-anim-translate-x', (0 + "vw"));
-	game_snag.style.setProperty('--snag-anim-translate-y', (getRandomIntInclusive(-45, 45) + "vh"));
-    game_snag.classList.add("game_snag_animation");
-    setTimeout(function() {
-			game_snag.parentNode.removeChild(game_snag);
-		}, 3950);
-}, 1000);
+	function recurs_playing() {
+        try {
+			var game_snag = document.querySelector('.game_snag:not(.processing)');
+			var game_bang = document.querySelector('.game_bang:not(.processing)');
+			// console.log(game_snag.getBoundingClientRect());
+			game_bang.classList.add("processing");
+			game_snag.classList.remove("visually-hidden");
+			game_snag.classList.add("processing");
+			game_snag.style.top = "calc(30% - " + (game_snag.getBoundingClientRect().height / 2) + "px)";
+			game_snag.style.left = "calc(50% - " + (game_snag.getBoundingClientRect().width / 2) + "px)";
+			try {
+				var check = true;
+				cycl_with_Timeout(50, 100, bang_check, [game_snag, game_character, game_bang], check);
+			} catch (error2) {
+				console.log(error2);
+			}
+			// 45 v - рамки экрана. чем больше от 45, тем быстрее скорость предмета. п.с. траетория тоже меняется. ПОЭТОМУ сложность наращивать именно здесь.
+			// TODO сложность
+			// возможно, придется подтягивать вероятность попадания по кораблю
+			game_snag.style.setProperty('--snag-anim-translate-x', (getRandomIntInclusive(-45, 45) + "vw"));
+			// game_snag.style.setProperty('--snag-anim-translate-x', (0 + "vw"));
+			game_snag.style.setProperty('--snag-anim-translate-y', (getRandomIntInclusive(-45, 45) + "vh"));
+			game_snag.classList.add("game_snag_animation");
+			setTimeout(function () {
+				try {
+					game_snag.parentNode.removeChild(game_snag);
+					game_bang.classList.remove("processing");
+				} catch(error1) {console.log(error1);}
+			}, 1950);
+		} catch (error3) {console.log(error3);}
+		// console.log("playing_game=" + playing_game);
+        if (playing_game) {
+			setTimeout(recurs_playing, 500);
+			// TODO сложность в таймауте
+		}
+    }
+    setTimeout(recurs_playing);
+}
+game_play.addEventListener("click", play_event);
 
-// TODO
-var sensibility = 20;
+// TODO sensibility регулировку на экране
+var sensibility = 30;
 var wallhack_sides = Math.round(game_character.getBoundingClientRect().width * 0.5);
+// console.log(wallhack_sides);
 var wallhack_top_n_bot = Math.round(game_character.getBoundingClientRect().height * 0.5);
 game = document.querySelector(".game");
 document.onkeydown = function(event) {
     switch (event.key) {
 		case 'ArrowLeft':
             // console.log('ArrowLeft');
-            if (game_character.getBoundingClientRect().left > -wallhack_sides){
+            if (game_character.getBoundingClientRect().left > 0 - wallhack_sides){
 				game_character.style.left = (game_character.getBoundingClientRect().left - sensibility) + "px";
 			}
             break;
@@ -119,11 +156,12 @@ document.onkeydown = function(event) {
             // console.log('ArrowRight');
             if (game_character.getBoundingClientRect().right < document.documentElement.clientWidth + wallhack_sides) {
 				game_character.style.left = (game_character.getBoundingClientRect().left + sensibility) + "px";
+				// console.log(game_character.getBoundingClientRect().left);
 			}
             break;
         case 'ArrowUp':
             // console.log('ArrowUp');
-            if (game_character.getBoundingClientRect().top > -wallhack_top_n_bot) {
+            if (game_character.getBoundingClientRect().top > 0 - wallhack_top_n_bot) {
 				game_character.style.top = (game_character.getBoundingClientRect().top - sensibility) + "px";
 			}
             break;

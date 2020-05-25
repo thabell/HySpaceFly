@@ -4,11 +4,15 @@
 {% block title %}HySpaceFly - Полет в гиперпространстве{% endblock %}
 
 {% block body_block %}
-<main class="game">
+
+    <button class="game_play" type="button"><span class="visually-hidden">Начать игру</span><img src="{% static 'img/game_play.png' %}"></button>
     <h1 class="game_h1"><span class="large">Hyperspace Fly</span><br><span class="small">Полет в гиперпространстве</span><br>приветствует тебя, путник!</h1>
-    <button class="game_play" type="button"><span class="visually-hidden">Начать игру</span><img src="{% static 'img/game_play.jpg' %}"></button>
-    <div class="game_bang visually-hidden"><img src="{{ bang.preview.url }}" alt="{{ bang }}"></div>
-    <div class="game_snag visually-hidden"><img src="{{ snag.preview.url }}" alt="{{ snag }}"></div>
+    <div class="game_bang_container">
+<!--        <div class="game_bang visually-hidden"><img src="{{ bang.preview.url }}" alt="{{ bang }}"></div>-->
+    </div>
+    <div class="game_snag_container">
+<!--        <div class="game_snag visually-hidden"><img src="{{ snag.preview.url }}" alt="{{ snag }}"></div>-->
+    </div>
     <div class="game_character"><img src="{{ character.preview.url }}" alt="{{ character }}"></div>
     <style>
         html {
@@ -20,7 +24,7 @@
             background-color: #120d2d;
         }
     </style>
-</main>
+
 {% endblock %}
 
 {% block scripts %}
@@ -41,5 +45,54 @@
         document.querySelector('html').style.backgroundImage = "url(../..{{ back.image_LQ.url }})";
     {% endif %}
     // как препятствия, так и взрывы рандомные сгенерировать здесь
+    game_h1 = document.querySelector('.game_h1');
+    var bangs = "{{ bangs }}";
+    var snags = "{{ snags }}";
+    bangs = bangs.replace(new RegExp("&quot;",'g'), "\"");
+    snags = snags.replace(new RegExp("&quot;",'g'), "\"");
+    bangs = JSON.parse(bangs);
+    snags = JSON.parse(snags);
+    console.log(bangs);
+    console.log(snags);
+    game_bang_container = document.querySelector('.game_bang_container');
+    game_snag_container = document.querySelector('.game_snag_container');
+    // цикл с таймаутом
+    function getRandomIntInclusive(min, max) { // fun from https://developer.mozilla.org
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function insert_new_bang() {
+        new_bang = document.createElement("div");
+        new_bang.classList = "game_bang visually-hidden";
+        new_bang_img = document.createElement("img");
+        new_bang_img.setAttribute("src", "../media/" + bangs[getRandomIntInclusive(0, bangs.length - 1)].fields.preview);
+        new_bang_img.setAttribute("alt", bangs[getRandomIntInclusive(0, bangs.length - 1)].fields.name);
+        new_bang.appendChild(new_bang_img);
+        game_bang_container.appendChild(new_bang);
+    }
+    insert_new_bang();
+    function insert_new_snag() {
+        // console.log("inserting...");
+        new_snag = document.createElement("div");
+        new_snag.classList = "game_snag visually-hidden";
+        new_snag_img = document.createElement("img");
+        new_snag_img.setAttribute("src", "../media/" + snags[getRandomIntInclusive(0, snags.length - 1)].fields.preview);
+        new_snag_img.setAttribute("alt", snags[getRandomIntInclusive(0, snags.length - 1)].fields.name);
+        new_snag.appendChild(new_snag_img);
+        game_snag_container.appendChild(new_snag);
+    }
+    insert_new_snag();
+
+    function recurs_inserting() {
+        if (game_snag_container.children.length < 20) {
+            insert_new_snag(); // вставить препятствие по рандомному индексу
+        }
+        if (game_bang_container.children.length < 10) {
+            insert_new_bang(); // вставить бэнг по рандомному индексу
+        }
+        setTimeout(recurs_inserting, 500);
+    }
+    setTimeout(recurs_inserting);
 </script>
 {% endblock %}
