@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from main.models import Background, Character, Snag, Bang
 
-from django.http import JsonResponse
-
 from django.core import serializers
+
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -33,6 +33,7 @@ def index(request):
     })
 
 
+@login_required(login_url='login')  # TODO убрать, когда появится идентификация пользователя по сессии анонимного юзера
 def profile(request):
     return render(request, 'main/profile.html', {})
 

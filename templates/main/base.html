@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    <header>
+        {% block custom_header %}
+            {% block add_header %}{% endblock}
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'logout' %}">Выйти</a>
+            {% else %}
+                <a href="{% url 'login' %}">Войти</a>
+            {% endif %}
+        {% endblock %}
+    </header>
     {% block body_block %}
     {% endblock %}
     <footer></footer>

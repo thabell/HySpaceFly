@@ -4,8 +4,7 @@
 {% block title %}HySpaceFly - Полет в гиперпространстве{% endblock %}
 
 {% block body_block %}
-
-    <button class="game_play" type="button"><span class="visually-hidden">Начать игру</span><img src="{% static 'img/game_play.png' %}"></button>
+    {% block add_header %}<button class="game_play" type="button"><span class="visually-hidden">Начать игру</span><img src="{% static 'img/game_play.png' %}"></button>{% endblock}
     <h1 class="game_h1"><span class="large">Hyperspace Fly</span><br><span class="small">Полет в гиперпространстве</span><br>приветствует тебя, путник!</h1>
     <div class="game_bang_container">
 <!--        <div class="game_bang visually-hidden"><img src="{{ bang.preview.url }}" alt="{{ bang }}"></div>-->

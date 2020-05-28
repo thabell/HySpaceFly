@@ -1,0 +1,14 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}HySpaceFly - Вход{% endblock %}
+
+{% block body_block %}
+    <h1>Введите даные для входа в аккаунт:</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+        <a href="{% url 'sign_up' %}">Зарегистрироваться</a>
+    </form>
+{% endblock %}
