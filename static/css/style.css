@@ -23,13 +23,15 @@ input[type="radio"].visually-hidden {
 }
 html {
     color: white;
+    width: 100%;
+    height: 100%;
+    background-color: #120d2d;
     overflow: hidden;
 }
 h1 {
     word-break: break-all;
     font-family: 'SpaceAge', serif;
     font-size: 4vh;
-    text-align: center;
 }
 h1 .large {
     font-size: 7vh;
@@ -138,3 +140,15 @@ img {
     animation-duration: 2s;
     animation-timing-function: linear;
 }
+/*
+.login-logout-but {
+    border: none;
+    background-img: url("../img/login-logout-but.png")
+    border-radius: 2%;
+    width: 10vh;
+    opacity: 0.5;
+}
+.login-logout-but:hover,
+.game_play:focus {
+    opacity: 1;
+}*/
