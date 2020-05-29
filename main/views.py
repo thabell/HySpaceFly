@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from main.models import Background, Character, Snag, Bang
+from main.models import Background, Character, Snag, Bang, Progress
 
 from django.core import serializers
 
@@ -40,7 +40,8 @@ def index(request):
 
 @login_required(login_url='login')  # TODO убрать, когда появится идентификация пользователя по сессии анонимного юзера
 def profile(request):
-    return render(request, 'main/profile.html', {})
+    user = request.user
+    return render(request, 'main/profile.html', {'user': user})
 
 
 def shop(request):
@@ -51,12 +52,16 @@ def signup(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST)
         if user_form.is_valid():
-            User.objects.create_user(user_form.cleaned_data['username'], user_form.cleaned_data['password'], user_form.cleaned_data['email'])
+            new_user = User.objects.create_user(user_form.cleaned_data['username'], user_form.cleaned_data['email'], user_form.cleaned_data['password'])
+
+            progress = Progress.create(new_user)
+            progress.save()
+
             user = authenticate(
                 username=user_form.cleaned_data['username'],
                 password=user_form.cleaned_data['password']
             )
-            if user is not None and user.is_active:
+            if user is not None:
                 login(request, user)
             else:
                 print('User login failed')

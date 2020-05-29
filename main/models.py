@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 # User
 # info akk
@@ -15,7 +15,14 @@ class Achievement(models.Model):
 
 # TODO
 class Progress(models.Model):  # (set of Achievements)
-    pass  # maybe better move it as a field to User
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="progress")
+    lvl = models.IntegerField("Уровень")
+    xp = models.IntegerField("Опыт")
+
+    @classmethod
+    def create(cls, user, lvl=0, xp=0):
+        prog = cls(user=user, lvl=lvl, xp=xp)
+        return prog
 
 
 # Shop

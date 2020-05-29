@@ -2,13 +2,14 @@
 {% load static %}
 
 {% block title %}HySpaceFly - Вход{% endblock %}
-{% block log_header %}{% endblock %}
+{% block login_href %}{% endblock %}
+{% block logout_href %}{% endblock %}
 {% block body_block %}
     <h1>Введите даные для входа в аккаунт:</h1>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Войти</button>
+        <button type="submit">Войти</button><br>
         <a href="{% url 'signup' %}">Зарегистрироваться</a>
     </form>
 {% endblock %}

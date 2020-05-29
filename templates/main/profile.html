@@ -2,7 +2,12 @@
 {% load static %}
 
 {% block title %}HySpaceFly - Профиль{% endblock %}
-
+{% block profile_href %}{% endblock %}
 {% block body_block %}
     <h1>Профиль</h1>
+    <p>Привет, {{ user }}!</p>
+    {% if user.progress %}
+         <p>Уровень: {{ user.progress.lvl }}</p>
+         <p>Опыт: {{ user.progress.xp }}</p>
+    {% endif %}
 {% endblock %}

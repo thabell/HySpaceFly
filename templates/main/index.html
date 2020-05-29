@@ -3,8 +3,8 @@
 
 {% block title %}HySpaceFly - Полет в гиперпространстве{% endblock %}
 
-{% block add_header %}<button class="game_play" type="button"><span class="visually-hidden">Начать игру</span><img src="{% static 'img/game_play.png' %}"></button>{% endblock %}
-
+{% block add_header %}<button class="header-but game_play" type="button"><span class="visually-hidden">Начать игру</span></button>{% endblock %}
+{% block index_href %}{% endblock %}
 {% block body_block %}
     <h1 class="game_h1"><span class="large">Hyperspace Fly</span><br><span class="small">Полет в гиперпространстве</span><br>приветствует тебя, путник!</h1>
     <div class="game_bang_container">
@@ -84,8 +84,19 @@
     }
     insert_new_snag();
 
+    {% if user.is_authenticated %}
+        var xp = user.progress.xp - 20;
+            var hp = 2000;
+
+    {% else %}
+        var xp = 0;
+        var hp = 2000;
+    {% endif %}
     function recurs_inserting() {
         if (game_snag_container.children.length < 20) {
+            {% if user.is_authenticated %}
+                xp++;
+            {% endif %}
             insert_new_snag(); // вставить препятствие по рандомному индексу
         }
         if (game_bang_container.children.length < 10) {
