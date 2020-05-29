@@ -69,6 +69,7 @@ var game_h1 = document.querySelector(".game_h1");
 var game_character = document.querySelector('.game_character');
 game_character.style.left = "calc(50% - " + Math.round(game_character.getBoundingClientRect().width / 2) + "px)";
 game_character.style.top = "calc(70% - " + Math.round(game_character.getBoundingClientRect().height / 2) + "px)";
+
 var game_play = document.querySelector('.game_play');
 var playing_game = false;
 

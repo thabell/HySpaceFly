@@ -140,15 +140,22 @@ img {
     animation-duration: 2s;
     animation-timing-function: linear;
 }
-/*
+header {
+    display: flex;
+    justify-content: space-between;
+}
 .login-logout-but {
-    border: none;
-    background-img: url("../img/login-logout-but.png")
     border-radius: 2%;
-    width: 10vh;
     opacity: 0.5;
+    display: inline-block;
+    background-image: url('../img/login-logout-but.png');
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 8vh;
+    height: 10vh;
 }
 .login-logout-but:hover,
-.game_play:focus {
+.login-logout-but:focus {
     opacity: 1;
-}*/
+}
