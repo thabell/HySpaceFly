@@ -1,7 +1,7 @@
 from django.contrib import admin
 from main.models import Preferences, Achievement, Progress, SaleItem, Background, Character,\
     CharacterMoves, Skills, Snag, SnagMoves, Bang, Banner, Speech, EventConnections
-
+from django.contrib.auth.models import User
 # Register your models here.
 
 
@@ -23,3 +23,15 @@ class SnagAdmin(admin.ModelAdmin):
 @admin.register(Bang)
 class BangAdmin(admin.ModelAdmin):
     list_display = ('name', 'preview')
+
+
+class ProgressInline(admin.TabularInline):
+    model = Progress
+
+
+admin.site.unregister(User)
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    inlines = [ProgressInline]

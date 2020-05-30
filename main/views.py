@@ -41,14 +41,20 @@ def index(request):
 @login_required(login_url='login')  # TODO убрать, когда появится идентификация пользователя по сессии анонимного юзера
 def profile(request):
     user = request.user
-    return render(request, 'main/profile.html', {'user': user})
+    back = Background.objects.filter(active=True).last()
+    return render(request, 'main/profile.html', {
+        'user': user,
+        'back': back
+    })
 
 
 def shop(request):
-    return render(request, 'main/shop.html', {})
+    back = Background.objects.filter(active=True).last()
+    return render(request, 'main/shop.html', {'back': back})
 
 
 def signup(request):
+    back = Background.objects.filter(active=True).last()
     if request.method == 'POST':
         user_form = UserForm(request.POST)
         if user_form.is_valid():
@@ -68,4 +74,7 @@ def signup(request):
             return redirect('../main/')
     else:
         user_form = UserForm()
-    return render(request, 'registration/signup.html', {'user_form': user_form})
+    return render(request, 'registration/signup.html', {
+        'user_form': user_form,
+        'back': back
+    })

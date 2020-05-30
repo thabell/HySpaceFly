@@ -33,8 +33,15 @@ html {
     color: white;
     width: 100%;
     height: 100%;
-    background-color: #120d2d;
+    background-color: #011634;
+    background-position: top center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /*100% 100%*/
     overflow: hidden;
+}
+a {
+    color: white;
 }
 h1 {
     word-break: break-all;
@@ -53,15 +60,16 @@ img {
 }
 .game_h1 {
     margin: 0 auto;
+    text-align: center;
+    transition: opacity 1s ease-out 0s;
     /*position: absolute;*/
     /*z-index: 2;*/
     /*top: 0;*/
     /*left: 0;*/
     /*right: 0;*/
 }
-.game_h1.game_h1_off {
+.game_h1.playing {
     opacity: 0.1;
-    transition: opacity 1s ease-out 0s;
 }
 .game_bang {
     width: 25vh;
@@ -135,6 +143,7 @@ img {
 }
 header {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
 }
 .header-but {
@@ -154,17 +163,85 @@ header {
     opacity: 1;
 }
 .login-logout-but {
-    background-image: url('../img/login-logout-but.png');
+    background-image: url('../img/login-logout.png');
 }
 .game_play {
     background-image: url('../img/game_play.png');
 }
+.game_play--playing {
+    background-image: url('../img/game_play--playing.png');
+}
 .profile-but {
-    background-image: url('../img/profile-but.png');
+    background-image: url('../img/profile.png');
 }
 .shop-but {
-    background-image: url('../img/shop-but.png');
+    background-image: url('../img/shop.png');
 }
 .index-but {
     background-image: url('../img/logo.png');
+}
+.game_progress {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    transition: opacity 1s ease-out 0s;
+}
+.game_progress.playing {
+    opacity: 0.2;
+}
+.game_progress.playing:hover,
+.game_progress.playing:focus {
+    opacity: 1;
+}
+.game_progress__lvl_n_xp_wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+.game_progress__lvl_n_xp_wrapper > * {
+}
+.game_progress__lvl {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    width: 7vh;
+    height: 7vh;
+    border-radius: 50%;
+    background-color: #c7b7d6;
+    color: #6d4592;
+    font-family: 'SpaceAge', serif;
+    font-size: 2.7vh;
+    overflow: hidden;
+}
+.game_progress__xp {
+    position: relative;
+    margin-left: 2.5vh;
+    border-radius: 2.5vh;
+    width: 15vh;
+    height: 5vh;
+    overflow: hidden;
+}
+:root {
+    --xp: 0;
+    --xp-scale: 1;
+}
+.game_progress__xp_user {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    height: 100%;
+    width: calc(var(--xp) * var(--xp-scale) * 1%);
+    /*clip-path: circle(100% at 2.5vh 50%);*/
+    background-color: #c7b7d6;
+    color: white;
+}
+.game_progress__xp_100_per {
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background-color: #6d4592;
+    color: white;
 }

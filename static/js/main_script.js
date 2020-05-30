@@ -1,3 +1,76 @@
+console.log(localStorage);
+
+function getRandomIntInclusive(min, max) { // fun from https://developer.mozilla.org
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/* ------ Snag n Bang generation ------ */
+var bangs = localStorage.getItem("bangs");
+var snags = localStorage.getItem("snags");
+bangs = JSON.parse(bangs);
+snags = JSON.parse(snags);
+console.log(bangs);
+console.log(snags);
+var game_bang_container = document.querySelector('.game_bang_container');
+var game_snag_container = document.querySelector('.game_snag_container');
+function insert_new_bang() {
+	var new_bang = document.createElement("div");
+	new_bang.classList = "game_bang visually-hidden";
+	var new_bang_img = document.createElement("img");
+	new_bang_img.setAttribute("src", "../../media/" + bangs[getRandomIntInclusive(0, bangs.length - 1)].fields.preview);
+	new_bang_img.setAttribute("alt", bangs[getRandomIntInclusive(0, bangs.length - 1)].fields.name);
+	new_bang.appendChild(new_bang_img);
+	game_bang_container.appendChild(new_bang);
+}
+function insert_new_snag() {
+	// console.log("inserting...");
+	var new_snag = document.createElement("div");
+	new_snag.classList = "game_snag visually-hidden";
+	var new_snag_img = document.createElement("img");
+	new_snag_img.setAttribute("src", "../../media/" + snags[getRandomIntInclusive(0, snags.length - 1)].fields.preview);
+	new_snag_img.setAttribute("alt", snags[getRandomIntInclusive(0, snags.length - 1)].fields.name);
+	new_snag.appendChild(new_snag_img);
+	game_snag_container.appendChild(new_snag);
+}
+function recurs_inserting() {
+	if (game_snag_container.children.length < 20) {
+		insert_new_snag(); // вставить препятствие по рандомному индексу
+	}
+	if (game_bang_container.children.length < 10) {
+		insert_new_bang(); // вставить бэнг по рандомному индексу
+	}
+	setTimeout(recurs_inserting, 500);
+}
+setTimeout(recurs_inserting);
+/* ------ /Snag n Bang generation ------ */
+
+
+/* ------ User progress control ------ */
+var is_authenticated = localStorage.getItem("is_authenticated");
+var lvl = localStorage.getItem("lvl");
+var xp = localStorage.getItem("xp");
+var base_hp = localStorage.getItem("base_hp");
+console.log("base_xp = " + xp);
+console.log("base_hp = " + base_hp);
+var game_progress__xp = document.querySelector(".game_progress__xp");
+game_progress__xp.style.setProperty('--xp', String(xp));
+game_progress__xp.style.setProperty('--xp-scale', String(1 / Number(lvl)));
+var game_progress__lvl = document.querySelector(".game_progress__lvl");
+game_progress__lvl.innerHTML = String(lvl);
+
+/* ------ /User progress control ------ */
+
+
+/* ------ Snag n Bang control ------ */
+var game_h1 = document.querySelector('.game_h1');
+var game_character = document.querySelector('.game_character');
+game_character.style.left = "calc(50% - " + Math.round(game_character.getBoundingClientRect().width / 2) + "px)";
+game_character.style.top = "calc(70% - " + Math.round(game_character.getBoundingClientRect().height / 2) + "px)";
+
+var game_play = document.querySelector('.game_play');
+var playing_game = false;
 
 function cycl_with_Timeout(mseconds, max_count, cycled_function, args, check) {
 	var i = 0;
@@ -10,12 +83,6 @@ function cycl_with_Timeout(mseconds, max_count, cycled_function, args, check) {
 		}
 	}
 	recurs_cycl();
-}
-
-function getRandomIntInclusive(min, max) { // fun from https://developer.mozilla.org
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function bang_check(args, check) {
@@ -65,13 +132,6 @@ function bang_check(args, check) {
 	return check;
 }
 
-var game_h1 = document.querySelector(".game_h1");
-var game_character = document.querySelector('.game_character');
-game_character.style.left = "calc(50% - " + Math.round(game_character.getBoundingClientRect().width / 2) + "px)";
-game_character.style.top = "calc(70% - " + Math.round(game_character.getBoundingClientRect().height / 2) + "px)";
-
-var game_play = document.querySelector('.game_play');
-var playing_game = false;
 
 // TODO сделать анимацию полета вне игры
 // TODO сделать анимацию пролета через тоннель гиперпространства при начале игры. мб объединить это
@@ -80,10 +140,8 @@ function prepareGame() {
 	playing_game = true;
 	game_play.removeEventListener("click", play_event);
 	game_play.addEventListener("click", stopGame);
-	setTimeout(function () { // async
-		game_play.innerHTML = "<span class=\"visually-hidden\">Остановить игру</span><img src=\"../static/img/game_play--playing.png\">";
-	});
-	game_h1.classList.add("game_h1_off");
+	game_play.classList.add("game_play--playing");
+	game_h1.classList.add("playing");
 }
 function stopGame(event) {
 	// console.log(event.target);
@@ -91,10 +149,8 @@ function stopGame(event) {
 	// console.log("playing_game=" + playing_game);
 	game_play.removeEventListener("click", stopGame);
 	game_play.addEventListener("click", play_event);
-	game_h1.classList.remove("game_h1_off");
-	setTimeout(function () { // async
-		game_play.innerHTML = "<span class=\"visually-hidden\">Начать игру</span><img src=\"../static/img/game_play.png\">";
-	});
+	game_play.classList.remove("game_play--playing");
+	game_h1.classList.remove("playing");
 }
 function play_event(event) {
 	// console.log(event.target);
@@ -139,12 +195,17 @@ function play_event(event) {
 }
 game_play.addEventListener("click", play_event);
 
+/* ------ /Snag n Bang control ------ */
+
+
+
+/* ------ Character moves ------ */
+
 // TODO sensibility регулировку на экране
 var sensibility = 30;
 var wallhack_sides = Math.round(game_character.getBoundingClientRect().width * 0.5);
 // console.log(wallhack_sides);
 var wallhack_top_n_bot = Math.round(game_character.getBoundingClientRect().height * 0.5);
-game = document.querySelector(".game");
 document.onkeydown = function(event) {
     switch (event.key) {
 		case 'ArrowLeft':
@@ -162,7 +223,7 @@ document.onkeydown = function(event) {
             break;
         case 'ArrowUp':
             // console.log('ArrowUp');
-            if (game_character.getBoundingClientRect().top > 0 - wallhack_top_n_bot) {
+            if (game_character.getBoundingClientRect().top > 0) {
 				game_character.style.top = (game_character.getBoundingClientRect().top - sensibility) + "px";
 			}
             break;
@@ -174,3 +235,5 @@ document.onkeydown = function(event) {
             break;
     }
 };
+
+/* ------ /Character moves ------ */

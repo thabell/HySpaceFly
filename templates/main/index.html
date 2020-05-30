@@ -7,6 +7,20 @@
 {% block index_href %}{% endblock %}
 {% block body_block %}
     <h1 class="game_h1"><span class="large">Hyperspace Fly</span><br><span class="small">Полет в гиперпространстве</span><br>приветствует тебя, путник!</h1>
+    <div class="game_progress">
+        <div class="game_progress__lvl_n_xp_wrapper">
+            <div class="game_progress__lvl"></div>
+            <div class="game_progress__xp">
+                <div class="game_progress__xp_user"></div>
+                <div class="game_progress__xp_100_per"></div>
+            </div>
+            <div class="game_progress__hp">
+                <div class="game_progress__hp_user"></div>
+                <div class="game_progress__hp_100_per"></div>
+            </div>
+        </div>
+        <div class="game_progress__hp"></div>
+    </div>
     <div class="game_bang_container">
 <!--        <div class="game_bang visually-hidden"><img src="{{ bang.preview.url }}" alt="{{ bang }}"></div>-->
     </div>
@@ -14,17 +28,12 @@
 <!--        <div class="game_snag visually-hidden"><img src="{{ snag.preview.url }}" alt="{{ snag }}"></div>-->
     </div>
     <div class="game_character"><img src="{{ character.preview.url }}" alt="{{ character }}"></div>
+
     <style>
         html {
-            background: url(../..{{ back.preview.url }}) 100% 100% no-repeat;
-            background-size: cover;
-            // background-position: center;
-        }
-        h1 {
-            text-align: center;
+            background-image: url("../..{{ back.preview.url }}");
         }
     </style>
-
 {% endblock %}
 
 {% block scripts %}
@@ -45,65 +54,99 @@
         document.querySelector('html').style.backgroundImage = "url(../..{{ back.image_LQ.url }})";
     {% endif %}
     // как препятствия, так и взрывы рандомные сгенерировать здесь
-    game_h1 = document.querySelector('.game_h1');
+    // game_h1 = document.querySelector('.game_h1');
     var bangs = "{{ bangs }}";
     var snags = "{{ snags }}";
     bangs = bangs.replace(new RegExp("&quot;",'g'), "\"");
     snags = snags.replace(new RegExp("&quot;",'g'), "\"");
-    bangs = JSON.parse(bangs);
-    snags = JSON.parse(snags);
-    console.log(bangs);
-    console.log(snags);
-    game_bang_container = document.querySelector('.game_bang_container');
-    game_snag_container = document.querySelector('.game_snag_container');
+    localStorage.setItem("bangs", bangs);
+    localStorage.setItem("snags", snags);
+    // bangs = JSON.parse(bangs);
+    // snags = JSON.parse(snags);
+    // console.log(bangs);
+    // console.log(snags);
+    // game_bang_container = document.querySelector('.game_bang_container');
+    // game_snag_container = document.querySelector('.game_snag_container');
     // цикл с таймаутом
-    function getRandomIntInclusive(min, max) { // fun from https://developer.mozilla.org
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    function insert_new_bang() {
-        new_bang = document.createElement("div");
-        new_bang.classList = "game_bang visually-hidden";
-        new_bang_img = document.createElement("img");
-        new_bang_img.setAttribute("src", "../media/" + bangs[getRandomIntInclusive(0, bangs.length - 1)].fields.preview);
-        new_bang_img.setAttribute("alt", bangs[getRandomIntInclusive(0, bangs.length - 1)].fields.name);
-        new_bang.appendChild(new_bang_img);
-        game_bang_container.appendChild(new_bang);
-    }
-    insert_new_bang();
-    function insert_new_snag() {
-        // console.log("inserting...");
-        new_snag = document.createElement("div");
-        new_snag.classList = "game_snag visually-hidden";
-        new_snag_img = document.createElement("img");
-        new_snag_img.setAttribute("src", "../media/" + snags[getRandomIntInclusive(0, snags.length - 1)].fields.preview);
-        new_snag_img.setAttribute("alt", snags[getRandomIntInclusive(0, snags.length - 1)].fields.name);
-        new_snag.appendChild(new_snag_img);
-        game_snag_container.appendChild(new_snag);
-    }
-    insert_new_snag();
-
+    // function getRandomIntInclusive(min, max) { // fun from https://developer.mozilla.org
+    //     min = Math.ceil(min);
+    //     max = Math.floor(max);
+    //     return Math.floor(Math.random() * (max - min + 1)) + min;
+    // }
+    // function insert_new_bang() {
+    //     new_bang = document.createElement("div");
+    //     new_bang.classList = "game_bang visually-hidden";
+    //     new_bang_img = document.createElement("img");
+    //     new_bang_img.setAttribute("src", "../../media/" + bangs[getRandomIntInclusive(0, bangs.length - 1)].fields.preview);
+    //     new_bang_img.setAttribute("alt", bangs[getRandomIntInclusive(0, bangs.length - 1)].fields.name);
+    //     new_bang.appendChild(new_bang_img);
+    //     game_bang_container.appendChild(new_bang);
+    // }
+    // insert_new_bang();
+    // function insert_new_snag() {
+    //     // console.log("inserting...");
+    //     new_snag = document.createElement("div");
+    //     new_snag.classList = "game_snag visually-hidden";
+    //     new_snag_img = document.createElement("img");
+    //     new_snag_img.setAttribute("src", "../../media/" + snags[getRandomIntInclusive(0, snags.length - 1)].fields.preview);
+    //     new_snag_img.setAttribute("alt", snags[getRandomIntInclusive(0, snags.length - 1)].fields.name);
+    //     new_snag.appendChild(new_snag_img);
+    //     game_snag_container.appendChild(new_snag);
+    // }
+    // insert_new_snag();
     {% if user.is_authenticated %}
-        var xp = user.progress.xp - 20;
-            var hp = 2000;
-
+        var is_authenticated = 1;
+        var lvl = {{ user.progress.lvl }};
+        var xp = {{ user.progress.xp }};
+        // console.log("xp = " + {{ user.progress.xp }});
+        // console.log("lvl = " + {{ user.progress.lvl }});
+        var base_hp = 1000 * {{ user.progress.lvl }};
     {% else %}
+        var is_authenticated = 0;
+        var lvl = 1;
         var xp = 0;
-        var hp = 2000;
+        var base_hp = 1000;
     {% endif %}
-    function recurs_inserting() {
-        if (game_snag_container.children.length < 20) {
-            {% if user.is_authenticated %}
-                xp++;
-            {% endif %}
-            insert_new_snag(); // вставить препятствие по рандомному индексу
-        }
-        if (game_bang_container.children.length < 10) {
-            insert_new_bang(); // вставить бэнг по рандомному индексу
-        }
-        setTimeout(recurs_inserting, 500);
-    }
-    setTimeout(recurs_inserting);
+    localStorage.setItem("is_authenticated", is_authenticated);
+    localStorage.setItem("lvl", lvl);
+    localStorage.setItem("xp", xp);
+    localStorage.setItem("base_hp", base_hp);
+
+    // {% if user.is_authenticated %}
+    //     var xp = {{ user.progress.xp }} - 19 + 180;
+    //     console.log("xp = " + {{ user.progress.xp }});
+    //     console.log("lvl = " + {{ user.progress.lvl }});
+    //     var hp = 1000 * {{ user.progress.lvl }} + 1800;
+    // {% else %}
+    //     var xp = 0 - 19 + 180;
+    //     var hp = 1000 + 1800;
+    // {% endif %}
+    // function recurs_inserting() {
+    //     if (game_snag_container.children.length < 20) {
+    //         // xp++;
+    //         // console.log("xp:" + xp);
+    //         insert_new_snag(); // вставить препятствие по рандомному индексу
+    //     }
+    //     if (game_bang_container.children.length < 10) {
+    //         // hp -= 200;
+    //         // console.log("hp:" + hp);
+    //         // if (hp <= 0) {
+    //         //     console.log("You died");
+    //         //     {% if user.is_authenticated %}
+    //         //         hp = 1000 * {{ user.progress.lvl }} + 9;
+    //         //     {% else %}
+    //         //         hp = 1009;
+    //         //     {% endif %}
+    //         //     xp -= hp;
+    //         // }
+    //         // xp -= 20;
+    //         // console.log("xp:" + xp);
+    //         insert_new_bang(); // вставить бэнг по рандомному индексу
+    //     }
+    //     setTimeout(recurs_inserting, 500);
+    // }
+    // setTimeout(recurs_inserting);
+
 </script>
+<script src="{% static 'js/main_script.js' %}"></script>
 {% endblock %}

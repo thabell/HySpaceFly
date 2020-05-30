@@ -20,7 +20,7 @@ class Progress(models.Model):  # (set of Achievements)
     xp = models.IntegerField("Опыт")
 
     @classmethod
-    def create(cls, user, lvl=0, xp=0):
+    def create(cls, user, lvl=1, xp=0):
         prog = cls(user=user, lvl=lvl, xp=xp)
         return prog
 
