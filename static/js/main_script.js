@@ -50,16 +50,46 @@ setTimeout(recurs_inserting);
 /* ------ User progress control ------ */
 var is_authenticated = localStorage.getItem("is_authenticated");
 var lvl = localStorage.getItem("lvl");
-var xp = localStorage.getItem("xp");
-var base_hp = localStorage.getItem("base_hp");
-console.log("base_xp = " + xp);
-console.log("base_hp = " + base_hp);
-var game_progress__xp = document.querySelector(".game_progress__xp");
-game_progress__xp.style.setProperty('--xp', String(xp));
-game_progress__xp.style.setProperty('--xp-scale', String(1 / Number(lvl)));
+var curr_xp = localStorage.getItem("curr_xp");
+console.log("lvl = " + lvl);
+console.log("curr_xp = " + curr_xp);
 var game_progress__lvl = document.querySelector(".game_progress__lvl");
 game_progress__lvl.innerHTML = String(lvl);
-
+var game_progress__xp = document.querySelector(".game_progress__xp");
+game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
+game_progress__xp.style.setProperty('--lvl', String(lvl));
+var base_xp = lvl * 100;
+var xp_p = game_progress__xp.querySelector(".game_progress__xp_title");
+xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);;
+var game_progress__hp = document.querySelector(".game_progress__hp");
+base_hp = lvl * 1000;
+curr_hp = base_hp;
+var hp_p = game_progress__hp.querySelector(".game_progress__hp_title");
+hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);;
+function reduce_hp_n_xp() {
+    difference = getRandomIntInclusive(200, 200 * lvl + 10);
+    curr_hp -= difference;
+    game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
+    hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
+    if (curr_hp <= 0) {
+        curr_xp -= base_hp;
+        stopGame();
+        alert("You died");
+        curr_hp = base_hp;
+        game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
+        hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
+    } else {
+        curr_xp -= Math.round(difference / 10);
+    }
+    if (curr_xp < 0) {
+        lvl--;
+        base_xp = lvl * 100;
+        game_progress__xp.style.setProperty('--lvl', String(lvl));
+        game_progress__lvl.innerHTML = String(lvl);
+    }
+    game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
+    xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);
+}
 /* ------ /User progress control ------ */
 
 
@@ -118,6 +148,7 @@ function bang_check(args, check) {
 		// console.log(b_y2);
 		// console.log(game_snag);
 		// console.log("bang");
+		setTimeout(reduce_hp_n_xp());
 		game_bang.style.left = a_x1 + "px";
 		game_bang.style.top = a_y1 + "px";
 		game_bang.classList.remove("visually-hidden");

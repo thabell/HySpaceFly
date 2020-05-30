@@ -30,6 +30,7 @@ input[type="radio"].visually-hidden {
 html {
     font-family: 'LatoRegular', serif;
     font-size: 2vh;
+    line-height: 2.5vh;
     color: white;
     width: 100%;
     height: 100%;
@@ -47,12 +48,15 @@ h1 {
     word-break: break-all;
     font-family: 'SpaceAge', serif;
     font-size: 3vh;
+    line-height: 3.5vh;
 }
 h1 .large {
     font-size: 7vh;
+    line-height: 7.5vh;
 }
 h1 .small {
     font-size: 2vh;
+    line-height: 2.5vh;
 }
 img {
     max-width: 100%;
@@ -155,8 +159,8 @@ header {
     background-position: top center;
     background-repeat: no-repeat;
     background-size: cover;
-    width: 10vh;
-    height: 10vh;
+    width: 9vh;
+    height: 9vh;
 }
 .header-but:hover,
 .header-but:focus {
@@ -213,32 +217,54 @@ header {
     color: #6d4592;
     font-family: 'SpaceAge', serif;
     font-size: 2.7vh;
+    line-height: 3vh;
     overflow: hidden;
 }
-.game_progress__xp {
+
+.game_progress__xp,
+.game_progress__hp {
     position: relative;
-    margin-left: 2.5vh;
+    margin-left: 2vh;
     border-radius: 2.5vh;
-    width: 15vh;
+    width: 17vh;
     height: 5vh;
     overflow: hidden;
 }
-:root {
-    --xp: 0;
-    --xp-scale: 1;
+.game_progress__xp_title,
+.game_progress__hp_title {
+    font-family: 'SpaceAge', serif;
+    font-size: 1.7vh;
+    line-height: 2vh;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 1.5vh;
+    top: 1.5vh;
 }
-.game_progress__xp_user {
+:root {
+    --curr_xp: 0;
+    --lvl: 1;
+    --base_hp: 1000 * var(--lvl);
+    --curr_hp: var(--base_hp);
+}
+.game_progress__xp_user,
+.game_progress__hp_user {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 0;
     height: 100%;
-    width: calc(var(--xp) * var(--xp-scale) * 1%);
-    /*clip-path: circle(100% at 2.5vh 50%);*/
     background-color: #c7b7d6;
     color: white;
 }
-.game_progress__xp_100_per {
+.game_progress__xp_user {
+    width: calc((var(--curr_xp) / var(--lvl)) * 1%);
+}
+.game_progress__hp_user {
+    width: calc((100 * var(--curr_hp) / var(--base_hp)) * 1%);
+}
+.game_progress__xp_100_per,
+.game_progress__hp_100_per {
     z-index: -1;
     width: 100%;
     height: 100%;

@@ -13,13 +13,14 @@
             <div class="game_progress__xp">
                 <div class="game_progress__xp_user"></div>
                 <div class="game_progress__xp_100_per"></div>
+                <p class="game_progress__xp_title"></p>
             </div>
             <div class="game_progress__hp">
                 <div class="game_progress__hp_user"></div>
                 <div class="game_progress__hp_100_per"></div>
+                <p class="game_progress__hp_title"></p>
             </div>
         </div>
-        <div class="game_progress__hp"></div>
     </div>
     <div class="game_bang_container">
 <!--        <div class="game_bang visually-hidden"><img src="{{ bang.preview.url }}" alt="{{ bang }}"></div>-->
@@ -97,20 +98,17 @@
     {% if user.is_authenticated %}
         var is_authenticated = 1;
         var lvl = {{ user.progress.lvl }};
-        var xp = {{ user.progress.xp }};
+        var curr_xp = {{ user.progress.xp }};
         // console.log("xp = " + {{ user.progress.xp }});
         // console.log("lvl = " + {{ user.progress.lvl }});
-        var base_hp = 1000 * {{ user.progress.lvl }};
     {% else %}
         var is_authenticated = 0;
         var lvl = 1;
-        var xp = 0;
-        var base_hp = 1000;
+        var curr_xp = 0;
     {% endif %}
     localStorage.setItem("is_authenticated", is_authenticated);
     localStorage.setItem("lvl", lvl);
-    localStorage.setItem("xp", xp);
-    localStorage.setItem("base_hp", base_hp);
+    localStorage.setItem("curr_xp", curr_xp);
 
     // {% if user.is_authenticated %}
     //     var xp = {{ user.progress.xp }} - 19 + 180;
