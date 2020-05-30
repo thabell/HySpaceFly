@@ -41,7 +41,7 @@ function recurs_inserting() {
 	if (game_bang_container.children.length < 10) {
 		insert_new_bang(); // вставить бэнг по рандомному индексу
 	}
-	setTimeout(recurs_inserting, 500);
+	setTimeout(recurs_inserting, 700);
 }
 setTimeout(recurs_inserting);
 /* ------ /Snag n Bang generation ------ */
@@ -53,41 +53,76 @@ var lvl = localStorage.getItem("lvl");
 var curr_xp = localStorage.getItem("curr_xp");
 console.log("lvl = " + lvl);
 console.log("curr_xp = " + curr_xp);
+
 var game_progress__lvl = document.querySelector(".game_progress__lvl");
 game_progress__lvl.innerHTML = String(lvl);
+
 var game_progress__xp = document.querySelector(".game_progress__xp");
 game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
-game_progress__xp.style.setProperty('--lvl', String(lvl));
 var base_xp = lvl * 100;
+game_progress__xp.style.setProperty('--base_xp', String(base_xp));
 var xp_p = game_progress__xp.querySelector(".game_progress__xp_title");
-xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);;
+xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);
+
 var game_progress__hp = document.querySelector(".game_progress__hp");
-base_hp = lvl * 1000;
-curr_hp = base_hp;
+var curr_hp = lvl * 1000;
+game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
+var base_hp = curr_hp;
+game_progress__hp.style.setProperty('--base_hp', String(base_hp));
 var hp_p = game_progress__hp.querySelector(".game_progress__hp_title");
-hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);;
+hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
+
+var you_died = document.querySelector(".you_died");
+
 function reduce_hp_n_xp() {
-    difference = getRandomIntInclusive(200, 200 * lvl + 10);
+    var difference = getRandomIntInclusive(200, 200 * lvl + 10);
     curr_hp -= difference;
-    game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
-    hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
     if (curr_hp <= 0) {
         curr_xp -= base_hp;
         stopGame();
-        alert("You died");
+        you_died.classList.add("active");
+        function died_event (event) {
+        	you_died.removeEventListener("click", died_event);
+        	you_died.classList.remove("active");
+		}
+        you_died.addEventListener("click", died_event);
+        base_hp = lvl * 1000;
         curr_hp = base_hp;
-        game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
-        hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
+        game_progress__hp.style.setProperty('--base_hp', String(base_hp));
     } else {
-        curr_xp -= Math.round(difference / 10);
+        curr_xp -= Math.round(difference / 28);
     }
+    game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
+    hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
     if (curr_xp < 0) {
+    	var mean = curr_xp;
         lvl--;
+        console.log(curr_xp);
         base_xp = lvl * 100;
-        game_progress__xp.style.setProperty('--lvl', String(lvl));
+        curr_xp = base_xp + mean;
+		console.log(curr_xp);
+		game_progress__xp.style.setProperty('--base_xp', String(base_xp));
         game_progress__lvl.innerHTML = String(lvl);
     }
     game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
+    xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);
+}
+function increase_xp() {
+	console.log(curr_xp);
+	curr_xp++;
+	console.log(curr_xp);
+	if (curr_xp >= base_xp) {
+		lvl++;
+		base_xp = lvl * 100;
+        curr_xp = 0;
+        game_progress__xp.style.setProperty('--base_xp', String(base_xp));
+        game_progress__lvl.innerHTML = String(lvl);
+        base_hp = lvl * 1000;
+        curr_hp = base_hp;
+        game_progress__hp.style.setProperty('--base_hp', String(base_hp));
+        game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
+	}
+	game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
     xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);
 }
 /* ------ /User progress control ------ */
@@ -188,6 +223,7 @@ function play_event(event) {
 	prepareGame();
 	function recurs_playing() {
         try {
+			increase_xp();
 			var game_snag = document.querySelector('.game_snag:not(.processing)');
 			var game_bang = document.querySelector('.game_bang:not(.processing)');
 			// console.log(game_snag.getBoundingClientRect());
@@ -214,11 +250,11 @@ function play_event(event) {
 					game_snag.parentNode.removeChild(game_snag);
 					game_bang.classList.remove("processing");
 				} catch(error1) {console.log(error1);}
-			}, 1950);
+			}, 2950);
 		} catch (error3) {console.log(error3);}
 		// console.log("playing_game=" + playing_game);
         if (playing_game) {
-			setTimeout(recurs_playing, 500);
+			setTimeout(recurs_playing, 700);
 			// TODO сложность в таймауте
 		}
     }

@@ -142,7 +142,7 @@ img {
 }
 .game_snag_animation {
     animation-name: game_snag_animation;
-    animation-duration: 2s;
+    animation-duration: 3s;
     animation-timing-function: linear;
 }
 header {
@@ -242,10 +242,10 @@ header {
     top: 1.5vh;
 }
 :root {
+    --base_xp: 100;
     --curr_xp: 0;
-    --lvl: 1;
-    --base_hp: 1000 * var(--lvl);
-    --curr_hp: var(--base_hp);
+    --base_hp: 1000;
+    --curr_hp: 1000;
 }
 .game_progress__xp_user,
 .game_progress__hp_user {
@@ -258,7 +258,7 @@ header {
     color: white;
 }
 .game_progress__xp_user {
-    width: calc((var(--curr_xp) / var(--lvl)) * 1%);
+    width: calc((100 * var(--curr_xp) / var(--base_xp)) * 1%);
 }
 .game_progress__hp_user {
     width: calc((100 * var(--curr_hp) / var(--base_hp)) * 1%);
@@ -270,4 +270,25 @@ header {
     height: 100%;
     background-color: #6d4592;
     color: white;
+}
+.you_died {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: darkred;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    font-size: 10vh;
+    line-height: 11vh;
+    opacity: 0;
+    z-index: -999;
+    transition: z-index 1s ease-out 0s, opacity 1s ease-out 0s;
+}
+.you_died.active {
+    opacity: 0.7;
+    z-index: 999;
 }
