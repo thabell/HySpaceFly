@@ -5,9 +5,60 @@
 {% block shop_href %}{% endblock %}
 {% block body_block %}
     <h1>Магазин</h1>
+    {% if not user.is_authenticated %}
+    Выполните вход для сохранения прогресса и выбора корабля!
+    {% endif %}
+    <div class="shop">
+        {% for character in characters %}
+        <div class="shop__item">
+            <p class="item__lvl">Lvl: {{ character.lvl }}</p>
+            <img src="{{ character.preview.url }}" alt="{{ character }}" title="{{ character }}">
+            <button class="button item__choose {% if request.user.preferences.character_id == character.id %}chosen{% endif %}" type="button" {% if request.user.progress.lvl > character.lvl %}onclick="setCharacter(event.target, {{ character.id }})"{% else %}disabled="disabled"{% endif %}>{% if request.user.preferences.character_id == character.id %}Выбран{% else %}Выбрать{% endif %}</button>
+        </div>
+        {% endfor %}
+    </div>
     <style>
         html {
             background-image: url("../..{{ back.preview.url }}");
         }
     </style>
+{% endblock %}
+{% block scripts %}
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function setCharacter(target, character_id) {
+            var xhr_ = new XMLHttpRequest();
+            var body_ = 'character_id=' + String(character_id);
+            xhr_.open("POST", '/main/shop/', true);
+            var csrftoken_ = getCookie('csrftoken');
+            xhr_.setRequestHeader("X-CSRFToken", csrftoken_);
+            xhr_.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr_.send(body_);
+            xhr_.onload = function() {
+                if (xhr_.status == 200) {
+                    console.log(xhr_.response)
+                }
+            };
+            var old_chosen = document.querySelector(".chosen");
+            old_chosen.classList.remove("chosen");
+            old_chosen.innerHTML = "Выбрать";
+            target.classList.add("chosen");
+            target.innerHTML = "Выбран";
+        }
+    </script>
 {% endblock %}

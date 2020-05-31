@@ -12,12 +12,8 @@
         }
     </style>
     <p>Привет, {{ user }}!</p>
-    {% if user.progress %}
         <p>Уровень: {{ user.progress.lvl }}</p>
         <p>Опыт: {{ user.progress.xp }}</p>
-    {% else %}
-        <p>У Вас нет прогресса</p>
-        <p>Вы можете <a href="{% url 'index' %}" title="Главная">сыграть</a> первую игру</p>
-    {% endif %}
+        <p><a class="button" href="{% url 'index' %}" title="Сыграть в игру">Сыграть в игру</a></p>
 
 {% endblock %}

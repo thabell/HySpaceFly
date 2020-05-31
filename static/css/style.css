@@ -44,6 +44,34 @@ html {
 a {
     color: white;
 }
+.button,
+a.button {
+    font-family: 'LatoRegular', serif;
+    font-size: 2vh;
+    line-height: 2.5vh;
+    border: none;
+    border-radius: 0.3vh;
+    background-color: #6d4592;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 1vh 3vh;
+}
+.button:hover,
+.button:focus,
+a.button:hover,
+a.button:focus {
+    background-color: #c7b7d6;
+}
+form .helptext {
+    display: block;
+    font-size: 1.5vh;
+    line-height: 2vh;
+    color: #c7b7d6;
+}
+form .errorlist {
+    color: #c7b7d6;
+}
 h1 {
     word-break: break-all;
     font-family: 'SpaceAge', serif;
@@ -113,10 +141,11 @@ img {
 .game_character {
     position: absolute;
     max-width: 20vw;
-    height: auto;
+    max-height: 10vw;
 }
 .game_character img {
     max-width: 20vw;
+    max-height: 10vw;
 }
 /*  # TODO animation_forward_left
     # TODO animation_forward_right
@@ -136,7 +165,7 @@ img {
         opacity: 1;
     }
     100% {
-        transform: scale(2, 2) translate(var(--snag-anim-translate-x), var(--snag-anim-translate-y));
+        transform: scale(2, 2) rotate(25deg) translate(var(--snag-anim-translate-x), var(--snag-anim-translate-y));
         opacity: 0;
     }
 }
@@ -189,13 +218,6 @@ header {
     flex-direction: row;
     justify-content: space-between;
     transition: opacity 1s ease-out 0s;
-}
-.game_progress.playing {
-    opacity: 0.2;
-}
-.game_progress.playing:hover,
-.game_progress.playing:focus {
-    opacity: 1;
 }
 .game_progress__lvl_n_xp_wrapper {
     display: flex;
@@ -275,7 +297,7 @@ header {
     position: absolute;
     top: 0;
     left: 0;
-    color: darkred;
+    color: #ed3e8e;
     background-color: black;
     display: flex;
     align-items: center;
@@ -287,8 +309,69 @@ header {
     opacity: 0;
     z-index: -999;
     transition: z-index 1s ease-out 0s, opacity 1s ease-out 0s;
+    text-transform: uppercase;
 }
 .you_died.active {
     opacity: 0.7;
     z-index: 999;
+}
+@keyframes lvl_up {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-140vh);
+    }
+}
+.lvl_up {
+    width: 20vh;
+    height: 20vh;
+    background-image: url('../img/lvl_up.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    z-index: 999;
+    bottom: -20vh;
+    left: calc(50% - 10vh);
+}
+.lvl_up.active {
+    animation-name: lvl_up;
+    animation-duration: 4s;
+    animation-timing-function: linear;
+}
+.shop {
+    text-align: center;
+    margin: 1vh;
+    overflow: auto;
+    max-height: 80vh;
+}
+.shop__item {
+    position: relative;
+    height: 13vh;
+    width: 35vh;
+    margin: 2vh;
+    display: inline-block;
+    text-align: center;
+}
+.shop__item img {
+    max-height: 13vh;
+    max-width: 35vh;
+}
+.shop__item .item__choose {
+    opacity: 0.5;
+    position: absolute;
+    bottom: 0;
+    left: calc(50% - 7.3vh);
+    padding: 0.5vh 3vh;
+}
+.shop__item .item__choose.chosen {
+    background-color: #c7b7d6;
+}
+.shop__item .item__choose[disabled="disabled"] {
+    background-color: grey;
+}
+.shop__item .item__lvl {
+    position: absolute;
+    top: 0;
+    left: 0;
 }

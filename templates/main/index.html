@@ -6,7 +6,10 @@
 {% block add_header %}<button class="header-but game_play" type="button"><span class="visually-hidden">Начать игру</span></button>{% endblock %}
 {% block index_href %}{% endblock %}
 {% block body_block %}
-    <h1 class="game_h1"><span class="large">Hyperspace Fly</span><br><span class="small">Полет в гиперпространстве</span><br>приветствует тебя, путник!</h1>
+    {% if not user.is_authenticated %}
+    Выполните вход для сохранения прогресса и выбора корабля!
+    {% endif %}
+    <h1 class="game_h1"><span class="large">Hyperspace Fly</span><br><span class="small">Полет в гиперпространстве</span><br>приветствует тебя, <span style="word-break: normal">{% if user.is_authenticated %}{{ user }}{% else %}путник{% endif %}!</span></h1>
     <div class="game_progress">
         <div class="game_progress__lvl_n_xp_wrapper">
             <div class="game_progress__lvl"></div>
@@ -22,7 +25,8 @@
             </div>
         </div>
     </div>
-    <div class="you_died"><strong>YOU DIED</strong></div>
+    <div class="you_died"><strong>You died</strong></div>
+    <div class="lvl_up visually-hidden"></div>
     <div class="game_bang_container">
 <!--        <div class="game_bang visually-hidden"><img src="{{ bang.preview.url }}" alt="{{ bang }}"></div>-->
     </div>
@@ -63,6 +67,7 @@
     snags = snags.replace(new RegExp("&quot;",'g'), "\"");
     localStorage.setItem("bangs", bangs);
     localStorage.setItem("snags", snags);
+    // TODO сделать передачу также, как данных юзера через XMLHttpRequest
     // bangs = JSON.parse(bangs);
     // snags = JSON.parse(snags);
     // console.log(bangs);
@@ -96,20 +101,20 @@
     //     game_snag_container.appendChild(new_snag);
     // }
     // insert_new_snag();
-    {% if user.is_authenticated %}
-        var is_authenticated = 1;
-        var lvl = {{ user.progress.lvl }};
-        var curr_xp = {{ user.progress.xp }};
-        // console.log("xp = " + {{ user.progress.xp }});
-        // console.log("lvl = " + {{ user.progress.lvl }});
-    {% else %}
-        var is_authenticated = 0;
-        var lvl = 1;
-        var curr_xp = 0;
-    {% endif %}
-    localStorage.setItem("is_authenticated", is_authenticated);
-    localStorage.setItem("lvl", lvl);
-    localStorage.setItem("curr_xp", curr_xp);
+    // {% if user.is_authenticated %}
+    //     var is_authenticated = 1;
+    //     var lvl = {{ user.progress.lvl }};
+    //     var curr_xp = {{ user.progress.xp }};
+    //     // console.log("xp = " + {{ user.progress.xp }});
+    //     // console.log("lvl = " + {{ user.progress.lvl }});
+    // {% else %}
+    //     var is_authenticated = 0;
+    //     var lvl = 1;
+    //     var curr_xp = 0;
+    // {% endif %}
+    // localStorage.setItem("is_authenticated", is_authenticated);
+    // localStorage.setItem("lvl", lvl);
+    // localStorage.setItem("curr_xp", curr_xp);
 
     // {% if user.is_authenticated %}
     //     var xp = {{ user.progress.xp }} - 19 + 180;

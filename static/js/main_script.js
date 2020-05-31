@@ -1,3 +1,19 @@
+function getCookie(name) {
+	var cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		var cookies = document.cookie.split(';');
+		for (var i = 0; i < cookies.length; i++) {
+			var cookie = cookies[i].trim();
+			// Does this cookie string begin with the name we want?
+			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
+}
+
 console.log(localStorage);
 
 function getRandomIntInclusive(min, max) { // fun from https://developer.mozilla.org
@@ -5,6 +21,7 @@ function getRandomIntInclusive(min, max) { // fun from https://developer.mozilla
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
 
 /* ------ Snag n Bang generation ------ */
 var bangs = localStorage.getItem("bangs");
@@ -48,23 +65,18 @@ setTimeout(recurs_inserting);
 
 
 /* ------ User progress control ------ */
-var is_authenticated = localStorage.getItem("is_authenticated");
-var lvl = localStorage.getItem("lvl");
-var curr_xp = localStorage.getItem("curr_xp");
-console.log("lvl = " + lvl);
-console.log("curr_xp = " + curr_xp);
-
-var game_progress__lvl = document.querySelector(".game_progress__lvl");
+var lvl = 1;
+var curr_xp = 0;
+var game_progress = document.querySelector(".game_progress");
+var game_progress__lvl = game_progress.querySelector(".game_progress__lvl");
 game_progress__lvl.innerHTML = String(lvl);
-
-var game_progress__xp = document.querySelector(".game_progress__xp");
+var game_progress__xp = game_progress.querySelector(".game_progress__xp");
 game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
 var base_xp = lvl * 100;
 game_progress__xp.style.setProperty('--base_xp', String(base_xp));
 var xp_p = game_progress__xp.querySelector(".game_progress__xp_title");
 xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);
-
-var game_progress__hp = document.querySelector(".game_progress__hp");
+var game_progress__hp = game_progress.querySelector(".game_progress__hp");
 var curr_hp = lvl * 1000;
 game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
 var base_hp = curr_hp;
@@ -72,13 +84,43 @@ game_progress__hp.style.setProperty('--base_hp', String(base_hp));
 var hp_p = game_progress__hp.querySelector(".game_progress__hp_title");
 hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
 
-var you_died = document.querySelector(".you_died");
+var xhr_ = new XMLHttpRequest();
+var body_ = 'getlvl=getlvl';
+xhr_.open("POST", '/main/index/', true);
+var csrftoken_ = getCookie('csrftoken');
+xhr_.setRequestHeader("X-CSRFToken", csrftoken_);
+xhr_.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr_.send(body_);
+xhr_.onload = function() {
+	if (xhr_.status == 200) {
+		// console.log(xhr_.response);
+		var resp = JSON.parse(xhr_.response);
+		lvl = resp["lvl"];
+		curr_xp = resp["xp"];
+		// console.log("lvl = " + lvl);
+		// console.log("curr_xp = " + curr_xp);
+		game_progress__lvl.innerHTML = String(lvl);
+		game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
+		base_xp = lvl * 100;
+		game_progress__xp.style.setProperty('--base_xp', String(base_xp));
+		xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);
+		curr_hp = lvl * 1000;
+		game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
+		base_hp = curr_hp;
+		game_progress__hp.style.setProperty('--base_hp', String(base_hp));
+		hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
+	}
+};
 
+var you_died = document.querySelector(".you_died");
+var lvl_up = document.querySelector(".lvl_up");
+// var lvl = localStorage.getItem("lvl");
+// var curr_xp = localStorage.getItem("curr_xp");
 function reduce_hp_n_xp() {
     var difference = getRandomIntInclusive(200, 200 * lvl + 10);
     curr_hp -= difference;
     if (curr_hp <= 0) {
-        curr_xp -= base_hp;
+        curr_xp = 0;
         stopGame();
         you_died.classList.add("active");
         function died_event (event) {
@@ -95,23 +137,33 @@ function reduce_hp_n_xp() {
     game_progress__hp.style.setProperty('--curr_hp', String(curr_hp));
     hp_p.innerHTML = String(curr_hp) + "/" + String(base_hp);
     if (curr_xp < 0) {
-    	var mean = curr_xp;
-        lvl--;
-        console.log(curr_xp);
-        base_xp = lvl * 100;
-        curr_xp = base_xp + mean;
-		console.log(curr_xp);
-		game_progress__xp.style.setProperty('--base_xp', String(base_xp));
-        game_progress__lvl.innerHTML = String(lvl);
+    	if (lvl > 1) {
+			var mean = curr_xp;
+			lvl--;
+			// console.log(curr_xp);
+			base_xp = lvl * 100;
+			curr_xp = base_xp + mean;
+			// console.log(curr_xp);
+			game_progress__xp.style.setProperty('--base_xp', String(base_xp));
+			game_progress__lvl.innerHTML = String(lvl);
+		} else {
+    		curr_xp = 0;
+		}
     }
     game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
     xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);
 }
 function increase_xp() {
-	console.log(curr_xp);
+	// console.log(curr_xp);
 	curr_xp++;
-	console.log(curr_xp);
+	// console.log(curr_xp);
 	if (curr_xp >= base_xp) {
+		lvl_up.classList.remove("visually-hidden");
+		lvl_up.classList.add("active");
+		setTimeout(function () {
+			lvl_up.classList.add("visually-hidden");
+			lvl_up.classList.remove("active");
+		}, 3980);
 		lvl++;
 		base_xp = lvl * 100;
         curr_xp = 0;
@@ -125,16 +177,17 @@ function increase_xp() {
 	game_progress__xp.style.setProperty('--curr_xp', String(curr_xp));
     xp_p.innerHTML = String(curr_xp) + "/" + String(base_xp);
 }
+
+
 /* ------ /User progress control ------ */
-
-
 /* ------ Snag n Bang control ------ */
 var game_h1 = document.querySelector('.game_h1');
 var game_character = document.querySelector('.game_character');
 game_character.style.left = "calc(50% - " + Math.round(game_character.getBoundingClientRect().width / 2) + "px)";
-game_character.style.top = "calc(70% - " + Math.round(game_character.getBoundingClientRect().height / 2) + "px)";
 
+game_character.style.top = "calc(70% - " + Math.round(game_character.getBoundingClientRect().height / 2) + "px)";
 var game_play = document.querySelector('.game_play');
+
 var playing_game = false;
 
 function cycl_with_Timeout(mseconds, max_count, cycled_function, args, check) {
@@ -149,6 +202,7 @@ function cycl_with_Timeout(mseconds, max_count, cycled_function, args, check) {
 	}
 	recurs_cycl();
 }
+
 
 function bang_check(args, check) {
 	var game_snag = args[0];
@@ -197,8 +251,6 @@ function bang_check(args, check) {
 	}
 	return check;
 }
-
-
 // TODO сделать анимацию полета вне игры
 // TODO сделать анимацию пролета через тоннель гиперпространства при начале игры. мб объединить это
 function prepareGame() {
@@ -217,6 +269,14 @@ function stopGame(event) {
 	game_play.addEventListener("click", play_event);
 	game_play.classList.remove("game_play--playing");
 	game_h1.classList.remove("playing");
+
+	var xhr = new XMLHttpRequest();
+	var body = 'lvl=' + encodeURIComponent(lvl) + '&xp=' + encodeURIComponent(curr_xp);
+	xhr.open("POST", '/main/index/', true);
+	var csrftoken = getCookie('csrftoken');
+	xhr.setRequestHeader("X-CSRFToken", csrftoken);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.send(body);
 }
 function play_event(event) {
 	// console.log(event.target);
@@ -272,7 +332,7 @@ game_play.addEventListener("click", play_event);
 var sensibility = 30;
 var wallhack_sides = Math.round(game_character.getBoundingClientRect().width * 0.5);
 // console.log(wallhack_sides);
-var wallhack_top_n_bot = Math.round(game_character.getBoundingClientRect().height * 0.5);
+// var wallhack_top_n_bot = Math.round(game_character.getBoundingClientRect().height * 0.5);
 document.onkeydown = function(event) {
     switch (event.key) {
 		case 'ArrowLeft':
@@ -296,7 +356,7 @@ document.onkeydown = function(event) {
             break;
         case 'ArrowDown':
             // console.log('ArrowDown');
-            if (game_character.getBoundingClientRect().bottom < document.documentElement.clientHeight + wallhack_top_n_bot) {
+            if (game_character.getBoundingClientRect().bottom < document.documentElement.clientHeight) {
 				game_character.style.top = (game_character.getBoundingClientRect().top + sensibility) + "px";
 			}
             break;

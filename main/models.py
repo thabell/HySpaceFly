@@ -5,16 +5,17 @@ from django.contrib.auth.models import User
 # info akk
 # TODO
 class Preferences(models.Model):
-    pass  # maybe better move it as a field to User
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="preferences")
+    character_id = models.IntegerField("Id персонажа")
 
 
 # TODO
 class Achievement(models.Model):
-    pass  # maybe better move it as a field to User
+    pass
 
 
 # TODO
-class Progress(models.Model):  # (set of Achievements)
+class Progress(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="progress")
     lvl = models.IntegerField("Уровень")
     xp = models.IntegerField("Опыт")
@@ -45,21 +46,12 @@ class Background(models.Model):  # cosmos
 
     def __str__(self):
         return "Фон"
-    # не работает
-    # @classmethod
-    # def create(cls, preview, image_FHD, image_HD, image_LQ, active):
-    #     back = cls(preview=preview, image_FHD=image_FHD,
-    #                image_HD=image_HD, image_LQ=image_LQ, active=active)
-    #     if back.active:
-    #         for back_ in Background.objects.all():
-    #             back_.active = False
-    #     back.active = True
-    #     return back
 
 
 class Character(models.Model):  # square, plane, human
     name = models.CharField("Название", max_length=50)
     preview = models.ImageField("Превью", upload_to="main/character/preview")
+    lvl = models.IntegerField("Уровень", default="1")
     # TODO animation_shot_list_up
     # TODO animation_shot_list_down
     # TODO animation_shot_list_left
@@ -72,6 +64,9 @@ class Character(models.Model):  # square, plane, human
 
     def __str__(self):
         return "Персонаж " + str(self.name)
+
+    class Meta:
+        ordering = ['lvl']
 
 # TODO
 class CharacterMoves(models.Model):  # (up down flying bang) ajax or js in html

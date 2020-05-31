@@ -2,14 +2,12 @@
 {% load static %}
 
 {% block title %}HySpaceFly - Регистрация{% endblock %}
-{% block login_href %}{% endblock %}
-{% block logout_href %}{% endblock %}
 {% block body_block %}
     <h1>Введите даные для регистрации аккаунта:</h1>
     <form method="POST">
         {% csrf_token %}
         {{ user_form.as_p }}<br>
-        <button type="submit">Зарегистрироваться</button>
+        <button class="button" type="submit">Зарегистрироваться</button>
     </form>
     <style>
         html {

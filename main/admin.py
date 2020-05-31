@@ -12,7 +12,7 @@ class BackgroundAdmin(admin.ModelAdmin):
 
 @admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
-    list_display = ('name', 'preview')
+    list_display = ('name', 'preview', 'id')
 
 
 @admin.register(Snag)
@@ -29,9 +29,13 @@ class ProgressInline(admin.TabularInline):
     model = Progress
 
 
+class PreferencesInline(admin.TabularInline):
+    model = Preferences
+
+
 admin.site.unregister(User)
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    inlines = [ProgressInline]
+    inlines = [ProgressInline, PreferencesInline]
